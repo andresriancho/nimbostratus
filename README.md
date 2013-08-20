@@ -18,8 +18,34 @@ pip install -r requirements.txt
 Usage
 =====
 
+A note on boto
+--------------
+
+It's important to notice that our tools use [boto](https://github.com/boto/boto) for connecting to Amazon's API, which
+means that you'll have to know at least the basics about how to provide credentials to it. There are basically three
+ways you can provide credentials to boto/nimbostratus:
+
+ * `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` [environment variables](https://code.google.com/p/boto/wiki/BotoConfig)
+ * `~/.boto` [file](https://code.google.com/p/boto/wiki/BotoConfig)
+ * [Instance meta-data / instance profile](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UsingIAM.html#UsingIAMrolesWithAmazonEC2Instances)
+
+In other words, you either export the environment variables with the values you captured from the target Amazon infrastructure,
+you write them to the `~/.boto` configuration file or run this tool inside a EC2 instance which has been configured to use and instance profile
+and allow boto to extract credentials from the meta-data.
+
+
 IAM role permissions
 --------------------
+
+This tool will dump all IAM role permissions for a set of credentials (API key and secret or instance-profile). This tool is commonly used when you just gain access to an EC2 instance and want to know which permissions are available for you.
+
+```console
+$ dump-role-permissions.py
+...
+```
+
+Create new user
+---------------
 
 This tool will dump all IAM role permissions for a set of credentials (API key and secret or instance-profile).
 
@@ -28,8 +54,7 @@ $ dump-role-permissions.py
 ...
 ```
 
-
-What's a nimbostratus anyways?
-==============================
+What's a `nimbostratus` anyways?
+================================
 
 [nimbostratus](http://en.wikipedia.org/wiki/Nimbostratus_cloud) is a type of cloud, if you ever started a project you know how hard it is to name it... so I just chose something that sounded "cool" and was "cloud-related".
