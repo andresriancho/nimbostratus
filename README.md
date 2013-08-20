@@ -44,6 +44,20 @@ $ dump-role-permissions.py
 ...
 ```
 
+Extract credentials
+-------------------
+
+Uses boto to identify the credentials available in this instance and prints them out to the console.
+
+```console
+$ dump-credentials.py
+...
+```
+
+Once you've got the credentials from an EC2 instance you've exploited, you can continue to work from any other
+host with internet access (remember: EC2 instances are in many cases spawned for a specific work and then terminated).
+
+
 Create new user
 ---------------
 
@@ -54,6 +68,8 @@ create it (with permissions to access all Amazon resources) and return API key a
 $ create-iam-user.py
 ...
 ```
+
+
 
 What's a `nimbostratus` anyways?
 ================================
