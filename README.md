@@ -47,10 +47,11 @@ $ dump-role-permissions.py
 Create new user
 ---------------
 
-This tool will dump all IAM role permissions for a set of credentials (API key and secret or instance-profile).
+If you've got credentials which allow you to create a new user using [IAM](http://aws.amazon.com/iam/) this tool will
+create it (with permissions to access all Amazon resources) and return API key and secret.
 
 ```console
-$ dump-role-permissions.py
+$ create-iam-user.py
 ...
 ```
 
