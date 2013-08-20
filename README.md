@@ -57,6 +57,30 @@ $ dump-credentials.py
 Once you've got the credentials from an EC2 instance you've exploited, you can continue to work from any other
 host with internet access (remember: EC2 instances are in many cases spawned for a specific work and then terminated).
 
+Create DB snapshot
+------------------
+
+In some cases you've got Amazon credentials which allow you to access the [RDS](http://aws.amazon.com/rds/) API but
+don't have any access to the database itself (MySQL user). This tool allows you to access the information stored in
+that database by creating a snapshot and restoring it.
+
+```console
+$ snapshot-rds.py --password=foobar
+...
+```
+
+Inject raw Celery message
+-------------------------
+
+Celery warns developers about the [insecure pickle](http://docs.celeryproject.org/en/latest/userguide/security.html#serializers)
+serialization method, but of course you'll find deployments like this in real life. This tool will check if the instance
+where this tool is being run has access to SQS, if that SQS has a Celery queue, verify that the Queue is using pickle and
+finally inject a raw message that will execute arbitrary commands when un-pickled.
+
+```console
+$ celery-unpickle-exploit.py
+...
+```
 
 Create new user
 ---------------
