@@ -57,6 +57,18 @@ $ dump-credentials.py
 Once you've got the credentials from an EC2 instance you've exploited, you can continue to work from any other
 host with internet access (remember: EC2 instances are in many cases spawned for a specific work and then terminated).
 
+Dump instance meta-data
+-----------------------
+
+All EC2 instances have [meta-data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html)
+which is accessible via [http://169.254.169.254/latest/meta-data/](http://169.254.169.254/latest/meta-data/). This
+tool will extract all the important information from the metadata and show it to you.
+
+```console
+$ dump-ec2-metadata.py
+...
+```
+
 Create DB snapshot
 ------------------
 
