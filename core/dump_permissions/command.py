@@ -46,7 +46,8 @@ def cmd_handler(args):
 def print_permissions(permissions):
     if not permissions:
         logging.warn('No permissions could be dumped.')
-        
+        return
+    
     for permission_obj in permissions:
         logging.info(pprint.pformat(permission_obj))
 
@@ -60,6 +61,7 @@ def bruteforce_permissions(access_key, secret_key, token):
     #    u's3:Get*',
     #    u's3:List*',
     action_list = []
+    permissions = []
     
     BRUTEFORCERS = (bruteforce_ec2_permissions,)
     
@@ -70,7 +72,9 @@ def bruteforce_permissions(access_key, secret_key, token):
                                          u'Effect': u'Allow',
                                          u'Resource': u'*'}],
                          u'Version': u'2012-10-17'}
-    permissions = [bruteforced_perms,]
+    
+    if action_list:
+        permissions.append(bruteforced_perms)
     
     return permissions
 
@@ -97,6 +101,9 @@ def bruteforce_ec2_permissions(access_key, secret_key, token):
             logging.debug('%s IS allowed' % api_action)
             actions.append(api_action)
     
+    if not actions:
+        logging.warn('No actions could be bruteforced.')
+
     return actions
 
 def check_via_iam(access_key, secret_key, token):
