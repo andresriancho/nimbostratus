@@ -51,6 +51,6 @@ def get_credentials():
     logging.info('Found credentials')
     logging.info('  Access key: %s' % access_key)
     logging.info('  Secret key: %s' % secret_key)
-    if credentials.token:
+    if security_token:
         logging.info('  Token: %s' % security_token)
     logging.info('')
