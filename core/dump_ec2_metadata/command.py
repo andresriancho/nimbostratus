@@ -5,6 +5,9 @@ from boto.utils import (get_instance_userdata,
                         get_instance_identity,
                         get_instance_metadata)
 
+from core.common_arguments import add_mangle_arguments
+from core.utils.mangle import setup_mangle, teardown_mangle
+
 
 def cmd_arguments(subparsers):
     #
@@ -12,13 +15,9 @@ def cmd_arguments(subparsers):
     #
     _help = 'Dump EC2 instance meta-data from http://169.254.169.254/'
     parser = subparsers.add_parser('dump-ec2-metadata', help=_help)
-    
-    _help = 'The URL which acts as a proxy and allows us to perform queries'\
-            ' to the instance meta-data. Example http://host.tld/?url=%s'\
-            ' Please note that for a successful exploitation you need'\
-            ' to edit the "extract_data_from_proxy" function.'
-    parser.add_argument('--proxy-url', help=_help)
-    
+
+    add_mangle_arguments(parser)
+        
     return subparsers
 
 def cmd_handler(args):
@@ -29,9 +28,14 @@ def cmd_handler(args):
     '''
     logging.debug('Starting dump-ec2-metadata')
     
-    handle_instance_metadata()
-    handle_instance_identity()
-    handle_instance_userdata()
+    setup_mangle(args)
+    
+    try:
+        handle_instance_metadata()
+        handle_instance_identity()
+        handle_instance_userdata()
+    finally:
+        teardown_mangle()
 
 def handle_instance_metadata():
     '''
