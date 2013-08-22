@@ -106,8 +106,8 @@ def handle_instance_identity():
     identity = get_instance_identity()
     logging.debug(pprint.pformat(identity))
     
-    logging.info('Architecture: %s' % identity['architecture'])
-    logging.info('Private IP: %s' % identity['privateIp'])
+    logging.info('Architecture: %s' % identity['document']['architecture'])
+    logging.info('Private IP: %s' % identity['document']['privateIp'])
 
 def handle_instance_userdata():
     '''
