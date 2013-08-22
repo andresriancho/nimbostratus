@@ -8,6 +8,7 @@ from boto.ec2 import EC2Connection
 from boto.sqs.connection import SQSConnection
 from core.common_arguments import add_credential_arguments
 from core.utils.get_current_user import get_current_user, get_user_from_key
+from boto.rds import RDSConnection
 
 
 def cmd_arguments(subparsers):
@@ -64,7 +65,8 @@ def bruteforce_permissions(access_key, secret_key, token):
     action_list = []
     permissions = []
     
-    BRUTEFORCERS = (bruteforce_ec2_permissions, bruteforce_sqs_permissions)
+    BRUTEFORCERS = (bruteforce_ec2_permissions, bruteforce_sqs_permissions,
+                    bruteforce_rds_permissions)
     
     for bruteforcer in BRUTEFORCERS:
         action_list.extend(bruteforcer(access_key, secret_key, token))
@@ -91,6 +93,14 @@ def bruteforce_ec2_permissions(access_key, secret_key, token):
 def bruteforce_sqs_permissions(access_key, secret_key, token):
     tests = [('ListQueues', 'get_all_queues', (), {}),]
     return generic_permission_bruteforcer(SQSConnection, access_key, secret_key,
+                                          token, tests)
+
+def bruteforce_rds_permissions(access_key, secret_key, token):
+    tests = [('DescribeDBInstances', 'get_all_dbinstances', (), {}),
+             ('DescribeDBSecurityGroups', 'get_all_dbsecurity_groups', (), {}),
+             ('DescribeDBSnapshots', 'get_all_dbsnapshots', (), {}),]
+    
+    return generic_permission_bruteforcer(RDSConnection, access_key, secret_key,
                                           token, tests)
     
 def generic_permission_bruteforcer(connection_klass, access_key, secret_key, token,
