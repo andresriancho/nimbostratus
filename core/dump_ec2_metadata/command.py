@@ -27,9 +27,9 @@ def cmd_handler(args):
     :param args: The command line arguments as parsed by argparse
     '''
     logging.debug('Starting dump-ec2-metadata')
-    get_instance_metadata
-    get_instance_identity
-    get_instance_userdata
+    print get_instance_metadata()
+    print get_instance_identity()
+    print get_instance_userdata()
 
 def extract_data_from_proxy(http_response):
     '''
