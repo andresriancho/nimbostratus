@@ -5,6 +5,7 @@ import logging
 
 from boto.iam import IAMConnection
 from boto.ec2 import EC2Connection
+from boto.sqs.connection import SQSConnection
 from core.common_arguments import add_credential_arguments
 from core.utils.get_current_user import get_current_user, get_user_from_key
 
@@ -63,7 +64,7 @@ def bruteforce_permissions(access_key, secret_key, token):
     action_list = []
     permissions = []
     
-    BRUTEFORCERS = (bruteforce_ec2_permissions,)
+    BRUTEFORCERS = (bruteforce_ec2_permissions, bruteforce_sqs_permissions)
     
     for bruteforcer in BRUTEFORCERS:
         action_list.extend(bruteforcer(access_key, secret_key, token))
@@ -75,25 +76,46 @@ def bruteforce_permissions(access_key, secret_key, token):
     
     if action_list:
         permissions.append(bruteforced_perms)
-    
+    else:
+        logging.warn('No actions could be bruteforced.')
+
     return permissions
 
 def bruteforce_ec2_permissions(access_key, secret_key, token):
+    tests = [('DescribeImages', 'get_all_images', (), {'owners': ['self',]}),
+             ('DescribeInstances', 'get_all_instances', (), {}),
+             ('DescribeInstanceStatus', 'get_all_instance_status', (), {}),]
+    return generic_permission_bruteforcer(EC2Connection, access_key, secret_key,
+                                          token, tests)
+
+def bruteforce_sqs_permissions(access_key, secret_key, token):
+    tests = [('ListQueues', 'get_all_queues', (), {}),]
+    return generic_permission_bruteforcer(SQSConnection, access_key, secret_key,
+                                          token, tests)
+    
+def generic_permission_bruteforcer(connection_klass, access_key, secret_key, token,
+                                   tests):
     actions = []
     
     try:
-        conn = EC2Connection(aws_access_key_id=access_key,
-                             aws_secret_access_key=secret_key,
-                             security_token=token)
+        conn = connection_klass(aws_access_key_id=access_key,
+                                aws_secret_access_key=secret_key,
+                                security_token=token)
     except Exception, e:
-        logging.debug('Failed to connect to EC2: "%s"' % e.error_message)
+        logging.debug('Failed to connect: "%s"' % e.error_message)
         return actions
     
-    TESTS = [('DescribeImages', conn.get_all_images, (), {'owners': ['self',]}),
-             ('DescribeInstances', conn.get_all_instances, (), {}),
-             ('DescribeInstanceStatus', conn.get_all_instance_status, (), {}),]
-    for api_action, method, args, kwargs in TESTS:
+    actions = generic_method_bruteforcer(tests, conn)
+    
+    return actions
+    
+
+def generic_method_bruteforcer(tests, conn):
+    actions = []
+    
+    for api_action, method_name, args, kwargs in tests:
         try:
+            method = getattr(conn, method_name)
             method(*args, **kwargs)
         except Exception, e:
             logging.debug('%s is not allowed: "%s"' % (api_action, e.error_message))
@@ -101,9 +123,6 @@ def bruteforce_ec2_permissions(access_key, secret_key, token):
             logging.debug('%s IS allowed' % api_action)
             actions.append(api_action)
     
-    if not actions:
-        logging.warn('No actions could be bruteforced.')
-
     return actions
 
 def check_via_iam(access_key, secret_key, token):

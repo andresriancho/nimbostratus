@@ -25,7 +25,7 @@ def get_user_from_key(conn, access_key):
     try:
         users_list = conn.get_all_users()['list_users_response']['list_users_result']['users']
     except Exception, e:
-        logging.debug('Failed to get all users: "%s"', e.error_message)
+        logging.debug('Failed to get all users: "%s"' % e.error_message)
         return None
     
     for user_data in users_list:
@@ -35,7 +35,7 @@ def get_user_from_key(conn, access_key):
         try:
             access_keys_response = conn.get_all_access_keys(user_name)
         except Exception, e:
-            logging.debug('Failed to get all access keys: "%s"', e.error_message)
+            logging.debug('Failed to get all access keys: "%s"' % e.error_message)
             return None
 
         access_keys = access_keys_response['list_access_keys_response']['list_access_keys_result']['access_key_metadata']
