@@ -48,7 +48,7 @@ def get_credentials():
     secret_key = provider.get_secret_key()
     security_token = provider.get_security_token()
 
-    logging.info('Found credentials' % cred_fn.__name__)
+    logging.info('Found credentials')
     logging.info('  Access key: %s' % access_key)
     logging.info('  Secret key: %s' % secret_key)
     if credentials.token:
