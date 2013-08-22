@@ -40,7 +40,7 @@ IAM role permissions
 This tool will dump all IAM role permissions for a set of credentials (API key and secret or instance-profile). This tool is commonly used when you just gain access to an EC2 instance and want to know which permissions are available for you.
 
 ```console
-$ dump-role-permissions.py
+$ nimbostratus dump-role-permissions
 ...
 ```
 
@@ -50,7 +50,7 @@ Extract credentials
 Uses boto to identify the credentials available in this instance and prints them out to the console.
 
 ```console
-$ dump-credentials.py
+$ nimbostratus dump-credentials
 ...
 ```
 
@@ -65,7 +65,7 @@ which is accessible via [http://169.254.169.254/latest/meta-data/](http://169.25
 tool will extract all the important information from the metadata and show it to you.
 
 ```console
-$ dump-ec2-metadata.py
+$ nimbostratus dump-ec2-metadata
 ...
 ```
 
@@ -77,7 +77,7 @@ don't have any access to the database itself (MySQL user). This tool allows you 
 that database by creating a snapshot and restoring it.
 
 ```console
-$ snapshot-rds.py --password=foobar
+$ nimbostratus snapshot-rds --password=foobar
 ...
 ```
 
@@ -90,7 +90,7 @@ where this tool is being run has access to SQS, if that SQS has a Celery queue, 
 finally inject a raw message that will execute arbitrary commands when un-pickled.
 
 ```console
-$ celery-unpickle-exploit.py
+$ nimbostratus celery-pickle-exploit
 ...
 ```
 
@@ -101,7 +101,7 @@ If you've got credentials which allow you to create a new user using [IAM](http:
 create it (with permissions to access all Amazon resources) and return API key and secret.
 
 ```console
-$ create-iam-user.py
+$ nimbostratus create-iam-user
 ...
 ```
 
