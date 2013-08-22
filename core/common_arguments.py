@@ -1,4 +1,4 @@
-def add_common_arguments(parser):
+def add_credential_arguments(parser):
     '''
     Adds the following command line arguments to the parser:
          * `--access-key`
@@ -11,11 +11,9 @@ def add_common_arguments(parser):
     _help = 'AWS secret key'
     parser.add_argument('--secret-key', help=_help, required=True)
 
-    '''
-    _help = 'AWS region to connect to'
-    parser.add_argument('--region', help=_help, required=True, default=None)
-    '''
-    
     _help = 'AWS instance profile token'
     parser.add_argument('--token', help=_help, required=False, default=None)
 
+def add_region_arguments(parser):
+    _help = 'AWS region to connect to'
+    parser.add_argument('--region', help=_help, required=True, default=None)
