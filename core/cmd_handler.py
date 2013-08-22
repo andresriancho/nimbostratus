@@ -2,7 +2,8 @@ import argparse
 
 from core.snapshot_rds.command import cmd_arguments as snap_cmd_args
 from core.celery_exploit.command import cmd_arguments as celery_cmd_args
-
+from core.create_iam_user.command import cmd_arguments as create_user_args
+from core.dump_ec2_metadata.command import cmd_arguments as dump_meta_args
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='nimbostratus')
@@ -11,8 +12,9 @@ def parse_args():
     
     subparsers = parser.add_subparsers(help='Available subcommands')
     
-    snap_cmd_args(subparsers)
-    celery_cmd_args(subparsers)
+    for custom_subparsers in (snap_cmd_args, celery_cmd_args, create_user_args,
+                              dump_meta_args):
+        custom_subparsers(subparsers)
     
     args = parser.parse_args()
     
