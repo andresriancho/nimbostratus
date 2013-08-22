@@ -1,3 +1,10 @@
+import logging
+
+from boto.utils import (get_instance_userdata,
+                        get_instance_identity,
+                        get_instance_metadata)
+
+
 def cmd_arguments(subparsers):
     #
     # dump-ec2-metadata subcommand help
@@ -10,9 +17,19 @@ def cmd_arguments(subparsers):
             ' Please note that for a successful exploitation you need'\
             ' to edit the "extract_data_from_proxy" function.'
     parser.add_argument('--proxy-url', help=_help)
-
     
     return subparsers
+
+def cmd_handler(args):
+    '''
+    Main entry point for the sub-command.
+    
+    :param args: The command line arguments as parsed by argparse
+    '''
+    logging.debug('Starting dump-ec2-metadata')
+    get_instance_metadata
+    get_instance_identity
+    get_instance_userdata
 
 def extract_data_from_proxy(http_response):
     '''

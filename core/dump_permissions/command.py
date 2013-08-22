@@ -5,7 +5,7 @@ import logging
 
 from boto.iam import IAMConnection
 from boto.ec2 import EC2Connection
-from core.common_arguments import add_common_arguments
+from core.common_arguments import add_credential_arguments
 from core.utils.get_current_user import get_current_user, get_user_from_key
 
 
@@ -16,7 +16,7 @@ def cmd_arguments(subparsers):
     _help = 'Dump the permissions for the currently configured credentials'
     parser = subparsers.add_parser('dump-permissions', help=_help)
     
-    add_common_arguments(parser)
+    add_credential_arguments(parser)
     
     return subparsers
 
@@ -76,7 +76,8 @@ def bruteforce_ec2_permissions(access_key, secret_key, token):
     
     try:
         conn = EC2Connection(aws_access_key_id=access_key,
-                             aws_secret_access_key=secret_key)
+                             aws_secret_access_key=secret_key,
+                             security_token=token)
     except Exception, e:
         logging.debug('Failed to connect to EC2: "%s"' % e.error_message)
         return actions
@@ -101,7 +102,8 @@ def check_via_iam(access_key, secret_key, token):
     '''
     try:
         conn = IAMConnection(aws_access_key_id=access_key,
-                             aws_secret_access_key=secret_key)
+                             aws_secret_access_key=secret_key,
+                             security_token=token)
     except Exception, e:
         logging.debug('Failed to connect to IAM: "%s"' % e.error_message)
         logging.debug('Account has no access to IAM')
@@ -153,7 +155,8 @@ def check_root_account(access_key, secret_key, token):
     
     try:
         conn = IAMConnection(aws_access_key_id=access_key,
-                             aws_secret_access_key=secret_key)
+                             aws_secret_access_key=secret_key,
+                             security_token=token)
     except Exception, e:
         # Root has access to IAM
         logging.debug('Failed to connect to IAM: "%s"' % e.error_message)
