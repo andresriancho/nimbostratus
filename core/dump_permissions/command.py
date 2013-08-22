@@ -44,6 +44,9 @@ def cmd_handler(args):
     print_permissions(permissions)
 
 def print_permissions(permissions):
+    if not permissions:
+        logging.warn('No permissions could be dumped.')
+        
     for permission_obj in permissions:
         logging.info(pprint.pformat(permission_obj))
 

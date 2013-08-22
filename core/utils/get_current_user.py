@@ -22,12 +22,22 @@ def get_user_from_key(conn, access_key):
                  u'arn': u'arn:aws:iam::334918212912:user/ses-smtp-user.20130531-111624',
                  u'user_name': u'ses-smtp-user.20130531-111624'}], u'is_truncated': u'false'}}}
     '''
-    users_list = conn.get_all_users()['list_users_response']['list_users_result']['users']
+    try:
+        users_list = conn.get_all_users()['list_users_response']['list_users_result']['users']
+    except Exception, e:
+        logging.debug('Failed to get all users: "%s"', e.error_message)
+        return None
+    
     for user_data in users_list:
         user_name = user_data['user_name']
         logging.debug('Getting access keys for user %s' % user_name)
 
-        access_keys_response = conn.get_all_access_keys(user_name)
+        try:
+            access_keys_response = conn.get_all_access_keys(user_name)
+        except Exception, e:
+            logging.debug('Failed to get all access keys: "%s"', e.error_message)
+            return None
+
         access_keys = access_keys_response['list_access_keys_response']['list_access_keys_result']['access_key_metadata']
         
         for access_key_data in access_keys:
