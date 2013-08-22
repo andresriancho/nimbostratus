@@ -35,4 +35,5 @@ nosetests.xml
 .pydevproject
 
 *~
+user-data.txt
 
