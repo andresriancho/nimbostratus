@@ -34,13 +34,13 @@ you write them to the `~/.boto` configuration file or run this tool inside a EC2
 and allow boto to extract credentials from the meta-data.
 
 
-IAM role permissions
---------------------
+Dump permissions
+----------------
 
-This tool will dump all IAM role permissions for a set of credentials (API key and secret or instance-profile). This tool is commonly used when you just gain access to an EC2 instance and want to know which permissions are available for you.
+This tool will dump all permissions for a set of credentials (API key and secret or instance-profile). This tool is commonly used when you just gain access to an EC2 instance and want to know which permissions are available for you.
 
 ```console
-$ nimbostratus dump-role-permissions
+$ nimbostratus dump-permissions
 ...
 ```
 
