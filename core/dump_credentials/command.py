@@ -1,3 +1,6 @@
+import logging
+
+
 def cmd_arguments(subparsers):
     #
     # dump-credentials subcommand help
@@ -13,4 +16,4 @@ def cmd_handler(args):
     
     :param args: The command line arguments as parsed by argparse
     '''
-    pass
+    logging.debug('Starting dump-credentials')

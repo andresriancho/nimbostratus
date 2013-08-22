@@ -1,5 +1,6 @@
 import argparse
 
+from core.log_handler import configure_logging 
 
 SUBCOMMANDS = {
                'snapshot-rds': 'core.snapshot_rds.command',
@@ -32,6 +33,8 @@ def cmd_handler():
     This is the "main" which is called by "nimbostratus" file.
     '''
     args = parse_args()
+
+    configure_logging(args.verbosity)
 
     module_name = SUBCOMMANDS[args.subparser_name]
     _temp = __import__(module_name, globals(), locals(), ['cmd_handler'], -1)
