@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+if __name__ == '__main__':
+    from core.cmd_handler import cmd_handler
+    cmd_handler()
+    
