@@ -45,6 +45,11 @@ $ nimbostratus dump-credentials
 Once you've got the credentials from an EC2 instance you've exploited, you can continue to work from any other
 host with internet access (remember: EC2 instances are in many cases spawned for a specific work and then terminated).
 
+*IMPORTANT*: This will extract information from `boto`'s credential configuration sources
+and from the instance meta-data. If the system uses other libraries to connect to AWS
+the credentials won't be dumped.
+
+
 Dump permissions
 ----------------
 
