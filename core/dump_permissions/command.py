@@ -6,9 +6,10 @@ import logging
 from boto.iam import IAMConnection
 from boto.ec2 import EC2Connection
 from boto.sqs.connection import SQSConnection
+from boto.rds import RDSConnection
+
 from core.common_arguments import add_credential_arguments
 from core.utils.get_current_user import get_current_user, get_user_from_key
-from boto.rds import RDSConnection
 
 
 def cmd_arguments(subparsers):
