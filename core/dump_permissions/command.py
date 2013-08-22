@@ -4,6 +4,7 @@ import urllib
 import logging
 
 from boto.iam import IAMConnection
+from boto.ec2 import EC2Connection
 from core.common_arguments import add_common_arguments
 from core.utils.get_current_user import get_current_user, get_user_from_key
 
@@ -39,11 +40,60 @@ def cmd_handler(args):
         return
     
     # Bruteforce the permissions
-    pass
+    permissions = bruteforce_permissions(args.access_key, args.secret_key, args.token)
+    print_permissions(permissions)
 
 def print_permissions(permissions):
     for permission_obj in permissions:
         logging.info(pprint.pformat(permission_obj))
+
+def bruteforce_permissions(access_key, secret_key, token):
+    '''
+    Will check the most common API calls and verify if we have access to them.
+    '''
+    # Some common actions are:
+    #    u'autoscaling:Describe*',
+    #    u'ec2:Describe*',
+    #    u's3:Get*',
+    #    u's3:List*',
+    action_list = []
+    
+    BRUTEFORCERS = (bruteforce_ec2_permissions,)
+    
+    for bruteforcer in BRUTEFORCERS:
+        action_list.extend(bruteforcer(access_key, secret_key, token))
+    
+    bruteforced_perms = {u'Statement': [{u'Action': action_list,
+                                         u'Effect': u'Allow',
+                                         u'Resource': u'*'}],
+                         u'Version': u'2012-10-17'}
+    permissions = [bruteforced_perms,]
+    
+    return permissions
+
+def bruteforce_ec2_permissions(access_key, secret_key, token):
+    actions = []
+    
+    try:
+        conn = EC2Connection(aws_access_key_id=access_key,
+                             aws_secret_access_key=secret_key)
+    except Exception, e:
+        logging.debug('Failed to connect to EC2: "%s"' % e.error_message)
+        return actions
+    
+    TESTS = [('DescribeImages', conn.get_all_images, (), {'owners': ['self',]}),
+             ('DescribeInstances', conn.get_all_instances, (), {}),
+             ('DescribeInstanceStatus', conn.get_all_instance_status, (), {}),]
+    for api_action, method, args, kwargs in TESTS:
+        try:
+            method(*args, **kwargs)
+        except Exception, e:
+            logging.debug('%s is not allowed: "%s"' % (api_action, e.error_message))
+        else:
+            logging.debug('%s IS allowed' % api_action)
+            actions.append(api_action)
+    
+    return actions
 
 def check_via_iam(access_key, secret_key, token):
     '''
