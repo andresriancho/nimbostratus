@@ -108,7 +108,7 @@ def cmd_handler(args):
         sg.authorize(cidr_ip='0.0.0.0/0')
         
         # Just in case we wait for it to be available
-        wait_for_available_db(conn, restored_instance)
+        db_clone = wait_for_available_db(conn, restored_instance)
         
         db_clone.modify(security_groups=[sg])
     except Exception, e:
@@ -128,3 +128,5 @@ def wait_for_available_db(conn, db_name):
         else:
             logging.debug('Waiting...')
             time.sleep(30)
+    
+    return db
