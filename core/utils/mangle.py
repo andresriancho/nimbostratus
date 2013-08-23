@@ -2,6 +2,8 @@ import logging
 import re
 import sys
 
+from functools import wraps
+
 import requests
 import httpretty
 
@@ -56,3 +58,15 @@ def setup_mangle(cmd_args):
 def teardown_mangle():
     if httpretty.is_enabled():
         httpretty.disable()
+
+def metadata_hook(fn):
+    
+    @wraps(fn)
+    def wrapper(cmd_args, *args, **kwds):
+        setup_mangle(cmd_args)
+        try:
+            fn(cmd_args, *args, **kwds)
+        finally:
+            teardown_mangle()
+    
+    return wrapper

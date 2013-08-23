@@ -6,7 +6,7 @@ from boto.utils import (get_instance_userdata,
                         get_instance_metadata)
 
 from core.common_arguments import add_mangle_arguments
-from core.utils.mangle import setup_mangle, teardown_mangle
+from core.utils.mangle import metadata_hook
 
 
 def cmd_arguments(subparsers):
@@ -20,6 +20,7 @@ def cmd_arguments(subparsers):
         
     return subparsers
 
+@metadata_hook
 def cmd_handler(args):
     '''
     Main entry point for the sub-command.
@@ -28,14 +29,9 @@ def cmd_handler(args):
     '''
     logging.debug('Starting dump-ec2-metadata')
     
-    setup_mangle(args)
-    
-    try:
-        handle_instance_metadata()
-        handle_instance_identity()
-        handle_instance_userdata()
-    finally:
-        teardown_mangle()
+    handle_instance_metadata()
+    handle_instance_identity()
+    handle_instance_userdata()
 
 def handle_instance_metadata():
     '''
