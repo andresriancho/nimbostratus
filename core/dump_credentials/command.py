@@ -3,7 +3,7 @@ import logging
 from boto.provider import get_default
 from boto.utils import get_instance_metadata
 
-from core.utils.mangle import setup_mangle, teardown_mangle
+from core.utils.mangle import metadata_hook
 from core.common_arguments import add_mangle_arguments
 
 
@@ -18,6 +18,7 @@ def cmd_arguments(subparsers):
     
     return subparsers
 
+@metadata_hook
 def cmd_handler(args):
     '''
     Main entry point for the sub-command.
@@ -26,21 +27,26 @@ def cmd_handler(args):
     '''
     logging.debug('Starting dump-credentials')
     
-    setup_mangle(args)
-    try:
-        get_credentials()
-    finally:
-        teardown_mangle()
+    get_credentials()
     
 def get_credentials():
-    meta_data = get_instance_metadata(data='meta-data/iam/security-credentials')
-    security = meta_data.values()[0]
-    access_key = security['AccessKeyId']
-    secret_key = security['SecretAccessKey']
-    security_token = security['Token']
+    get_metadata_credentials()
+    get_local_credentials()
+    
+def get_metadata_credentials():
+    meta_data = get_instance_metadata(data='meta-data/iam/security-credentials',
+                                      num_retries=1, timeout=2)
+    if not meta_data:
+        logging.debug('Failed to contact instance meta-data server.')
+    else:
+        security = meta_data.values()[0]
+        access_key = security['AccessKeyId']
+        secret_key = security['SecretAccessKey']
+        security_token = security['Token']
+    
+        print_credentials(access_key, secret_key, security_token)
 
-    print_credentials(access_key, secret_key, security_token)
-
+def get_local_credentials():
     provider = get_default()
     provider.get_credentials()
     
