@@ -9,7 +9,7 @@ import httpretty
 
 NOT_FOUND = '404 - Not Found'
 # 'http://ec2-54-254-24-239.ap-southeast-1.compute.amazonaws.com/?url=%s'
-VULN_URL = None
+VULN_URL = ''
 
 
 def mangle(method, uri, headers):
@@ -19,11 +19,16 @@ def mangle(method, uri, headers):
     mangled_url = VULN_URL % uri
     
     logging.debug('Requesting %s' % mangled_url)
-    response = requests.get(mangled_url)
+    try:
+        response = requests.get(mangled_url)
+    except Exception, e:
+        logging.exception('Unhandled exception in mangled request: %s' % e)
     
     code = 200
     if NOT_FOUND in response.text:
         code = 404
+    
+    #logging.debug('Status code: %s - Body: "%s..."' % (code, response.text[:10]))
         
     return (code, headers, response.text)
     
