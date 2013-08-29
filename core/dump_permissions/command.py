@@ -58,6 +58,7 @@ def bruteforce_permissions(access_key, secret_key, token):
     '''
     Will check the most common API calls and verify if we have access to them.
     '''
+    logging.debug('Bruteforcing permissions')
     # Some common actions are:
     #    u'autoscaling:Describe*',
     #    u'ec2:Describe*',
@@ -159,7 +160,6 @@ def check_via_iam(access_key, secret_key, token):
     except Exception, e:
         msg = 'Account has no privileges to get all user policies: "%s"'
         logging.debug(msg % e.error_message)
-        return False, None
 
     policy_names = all_user_policies['list_user_policies_response']['list_user_policies_result']['policy_names']
     
@@ -171,14 +171,49 @@ def check_via_iam(access_key, secret_key, token):
         except:
             msg = 'Account has no privileges to get user policy: "%s"'
             logging.debug(msg % e.error_message)
-            return False, None
+            break
         else:
             policy_document = user_policy['get_user_policy_response']['get_user_policy_result']['policy_document']
             policy_document = urllib.unquote(policy_document)
             policy_document = json.loads(policy_document)
             permissions.append(policy_document)
+
+    all_groups = []
+    all_group_policies = []
     
-    return True, permissions
+    try:
+        all_groups_resp = conn.get_groups_for_user(user)
+    except Exception, e:
+        msg = 'Account has no privileges to get groups for user: "%s"'
+        logging.debug(msg % e.error_message)
+
+    for group in all_groups_resp['list_groups_for_user_response']['list_groups_for_user_result']['groups']:
+        all_groups.append(group['group_name'])
+
+    try:
+        for group in all_groups:
+            group_policies_resp = conn.get_all_group_policies(group)
+            policy_names = group_policies_resp['list_group_policies_response']['list_group_policies_result']['policy_names']
+            all_group_policies.extend(policy_names)
+    except Exception, e:
+        msg = 'Account has no privileges to get all group policies: "%s"'
+        logging.debug(msg % e.error_message)
+
+    for group in all_groups:
+        for policy in all_group_policies:
+            try:
+                group_policy = conn.get_group_policy(group, policy)
+            except:
+                msg = 'Account has no privileges to get group policy: "%s"'
+                logging.debug(msg % e.error_message)
+                break
+            else:
+                policy_document = group_policy['get_group_policy_response']['get_group_policy_result']['policy_document']
+                policy_document = urllib.unquote(policy_document)
+                policy_document = json.loads(policy_document)
+                permissions.append(policy_document)
+            
+    return bool(permissions), permissions
 
 
 def check_root_account(access_key, secret_key, token):
