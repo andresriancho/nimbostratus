@@ -155,11 +155,14 @@ def check_via_iam(access_key, secret_key, token):
     if user is None:
         return False, None
 
+    logging.info('Current user %s' % user)
+
     try:
         all_user_policies = conn.get_all_user_policies(user)
     except Exception, e:
         msg = 'Account has no privileges to get all user policies: "%s"'
         logging.debug(msg % e.error_message)
+        return False, None
 
     policy_names = all_user_policies['list_user_policies_response']['list_user_policies_result']['policy_names']
     
