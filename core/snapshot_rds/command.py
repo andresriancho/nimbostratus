@@ -51,14 +51,14 @@ def cmd_handler(args):
                                  aws_access_key_id=args.access_key,
                                  aws_secret_access_key=args.secret_key,
                                  security_token=args.token)
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to connect to RDS: "%s"' % e.error_message)
         return
     
     try:
         instances = conn.get_all_dbinstances(args.rds_name)
         db = instances[0]
-    except Exception, e:
+    except Exception as e:
         logging.critical('No RDS instance with name "%s"' % (args.rds_name,
                                                              e.error_message))
         return
@@ -73,7 +73,7 @@ def cmd_handler(args):
         logging.info('Waiting for snapshot to complete in AWS... (this takes at least 5m)')
         wait_for_available_db(conn, args.rds_name)
         
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to snapshot: "%s"' % e.error_message)
         return
     
@@ -85,7 +85,7 @@ def cmd_handler(args):
         logging.info('Waiting for restore process in AWS... (this takes at least 5m)')
         wait_for_available_db(conn, restored_instance)
         
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to restore DB instance: "%s"' % e.error_message)
         return
     
@@ -93,7 +93,7 @@ def cmd_handler(args):
         conn.modify_dbinstance(id=restored_instance,
                                master_password=args.password,
                                apply_immediately=True)
-    except Exception, e:
+    except Exception as e:
         msg = 'Failed to change the newly created RDS master password: "%s"'
         logging.critical(msg % e.error_message)
     
@@ -111,7 +111,7 @@ def cmd_handler(args):
         db_clone = wait_for_available_db(conn, restored_instance)
         
         db_clone.modify(security_groups=[sg])
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to create and apply DB security group: "%s"' % e.error_message)
         return
     else:

@@ -24,7 +24,7 @@ def get_user_from_key(conn, access_key):
     '''
     try:
         users_list = conn.get_all_users()['list_users_response']['list_users_result']['users']
-    except Exception, e:
+    except Exception as e:
         logging.debug('Failed to get all users: "%s"' % e.error_message)
         return None
     
@@ -34,7 +34,7 @@ def get_user_from_key(conn, access_key):
 
         try:
             access_keys_response = conn.get_all_access_keys(user_name)
-        except Exception, e:
+        except Exception as e:
             logging.debug('Failed to get all access keys: "%s"' % e.error_message)
             return None
 
@@ -50,7 +50,7 @@ def get_user_from_key(conn, access_key):
 def get_current_user_from_error(conn, access_key):
     try:
         conn.get_account_summary()
-    except Exception, e:
+    except Exception as e:
         # User: arn:aws:iam::334918212912:user/pedro is not authorized to perform: ...
         message = e.error_message
     else:

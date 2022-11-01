@@ -21,7 +21,7 @@ def mangle(method, uri, headers):
     logging.debug('Requesting %s' % mangled_url)
     try:
         response = requests.get(mangled_url)
-    except Exception, e:
+    except Exception as e:
         logging.exception('Unhandled exception in mangled request: %s' % e)
     
     code = 200
@@ -40,7 +40,7 @@ def setup_mangle(cmd_args):
             mangle_module = '.'.join(mangle_module_funct.split('.')[:-1])
             mangle_funct = mangle_module_funct.split('.')[-1]
             
-            _temp = __import__(mangle_module, globals(), locals(), ['mangle_funct'], -1)
+            _temp = __import__(mangle_module, globals(), locals(), ['mangle_funct'], 0)
             mangle_funct = getattr(_temp, mangle_funct)
         except:
             msg = 'The user configured mangle function %s does not exist.'

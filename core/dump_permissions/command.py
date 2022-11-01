@@ -113,7 +113,7 @@ def generic_permission_bruteforcer(connection_klass, access_key, secret_key, tok
         conn = connection_klass(aws_access_key_id=access_key,
                                 aws_secret_access_key=secret_key,
                                 security_token=token)
-    except Exception, e:
+    except Exception as e:
         logging.debug('Failed to connect: "%s"' % e.error_message)
         return actions
     
@@ -129,7 +129,7 @@ def generic_method_bruteforcer(tests, conn):
         try:
             method = getattr(conn, method_name)
             method(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             logging.debug('%s is not allowed: "%s"' % (api_action, e.error_message))
         else:
             logging.debug('%s IS allowed' % api_action)
@@ -145,7 +145,7 @@ def check_via_iam(access_key, secret_key, token):
         conn = IAMConnection(aws_access_key_id=access_key,
                              aws_secret_access_key=secret_key,
                              security_token=token)
-    except Exception, e:
+    except Exception as e:
         logging.debug('Failed to connect to IAM: "%s"' % e.error_message)
         logging.debug('Account has no access to IAM')
         return False, None
@@ -159,7 +159,7 @@ def check_via_iam(access_key, secret_key, token):
 
     try:
         all_user_policies = conn.get_all_user_policies(user)
-    except Exception, e:
+    except Exception as e:
         msg = 'Account has no privileges to get all user policies: "%s"'
         logging.debug(msg % e.error_message)
         return False, None
@@ -186,7 +186,7 @@ def check_via_iam(access_key, secret_key, token):
     
     try:
         all_groups_resp = conn.get_groups_for_user(user)
-    except Exception, e:
+    except Exception as e:
         msg = 'Account has no privileges to get groups for user: "%s"'
         logging.debug(msg % e.error_message)
 
@@ -198,7 +198,7 @@ def check_via_iam(access_key, secret_key, token):
             group_policies_resp = conn.get_all_group_policies(group)
             policy_names = group_policies_resp['list_group_policies_response']['list_group_policies_result']['policy_names']
             all_group_policies.extend(policy_names)
-    except Exception, e:
+    except Exception as e:
         msg = 'Account has no privileges to get all group policies: "%s"'
         logging.debug(msg % e.error_message)
 
@@ -235,7 +235,7 @@ def check_root_account(access_key, secret_key, token):
         conn = IAMConnection(aws_access_key_id=access_key,
                              aws_secret_access_key=secret_key,
                              security_token=token)
-    except Exception, e:
+    except Exception as e:
         # Root has access to IAM
         logging.debug('Failed to connect to IAM: "%s"' % e.error_message)
         logging.debug('Not an AWS root account')
@@ -243,7 +243,7 @@ def check_root_account(access_key, secret_key, token):
     
     try:
         conn.get_account_summary()
-    except Exception, e:
+    except Exception as e:
         # Root has access to IAM account summary
         logging.debug('Failed to retrieve IAM account summary: "%s"' % e.error_message)
         logging.debug('Not an AWS root account')
@@ -251,7 +251,7 @@ def check_root_account(access_key, secret_key, token):
     
     try:
         user = get_user_from_key(conn, access_key)
-    except Exception, e:
+    except Exception as e:
         # Root has access to IAM
         logging.debug('Failed to enumerate users and access keys: "%s"' % e.error_message)
         logging.debug('Not an AWS root account')
