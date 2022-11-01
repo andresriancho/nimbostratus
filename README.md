@@ -6,7 +6,7 @@ which I developed for my "Pivoting in Amazon clouds" talk, developed using the g
 
 For more information visit [the project page](http://andresriancho.github.io/nimbostratus/)
 
-#@ Installation
+## Installation
 
 ```
 git clone https://github.com/andresriancho/nimbostratus
