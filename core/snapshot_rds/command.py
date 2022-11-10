@@ -63,8 +63,8 @@ def cmd_handler(args):
                                                              e.error_message))
         return
     
-    snapshot_name = ''.join([random.choice(string.ascii_lowercase) for _ in xrange(9)])
-    security_group_name = ''.join([random.choice(string.ascii_lowercase) for _ in xrange(9)])
+    snapshot_name = ''.join([random.choice(string.ascii_lowercase) for _ in range(9)])
+    security_group_name = ''.join([random.choice(string.ascii_lowercase) for _ in range(9)])
     restored_instance = 'restored-%s' % snapshot_name
     
     try:

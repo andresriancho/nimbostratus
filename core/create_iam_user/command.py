@@ -64,7 +64,7 @@ def create_iam_user(access_key, secret_key, token):
         logging.debug('Account has no access to IAM')
         return
     
-    user_name = ''.join([random.choice(string.ascii_lowercase) for _ in xrange(9)])
+    user_name = ''.join([random.choice(string.ascii_lowercase) for _ in range(9)])
     
     logging.debug('Trying to create user "%s"' % user_name)
     
