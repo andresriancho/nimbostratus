@@ -59,18 +59,18 @@ def create_iam_user(access_key, secret_key, token):
         conn = IAMConnection(aws_access_key_id=access_key,
                              aws_secret_access_key=secret_key,
                              security_token=token)
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to connect to IAM: "%s"' % e.error_message)
         logging.debug('Account has no access to IAM')
         return
     
-    user_name = ''.join([random.choice(string.ascii_lowercase) for _ in xrange(9)])
+    user_name = ''.join([random.choice(string.ascii_lowercase) for _ in range(9)])
     
     logging.debug('Trying to create user "%s"' % user_name)
     
     try:
         conn.create_user(user_name)
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to create user: "%s"' % e.error_message)
         return
     
@@ -79,7 +79,7 @@ def create_iam_user(access_key, secret_key, token):
     
     try:
         credentials = conn.create_access_key(user_name=user_name)
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to create user access key: "%s"' % e.error_message)
         return
         
@@ -94,7 +94,7 @@ def create_iam_user(access_key, secret_key, token):
     
     try:
         conn.put_user_policy(user_name, policy_name, ALL_POLICY)
-    except Exception, e:
+    except Exception as e:
         logging.critical('Failed to add user policy: "%s"' % e.error_message)
         return
         

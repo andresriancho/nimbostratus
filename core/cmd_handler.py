@@ -20,8 +20,8 @@ def parse_args():
     subparsers = parser.add_subparsers(help='Available subcommands',
                                        dest="subparser_name")
     
-    for subcommand, module_name in SUBCOMMANDS.iteritems():
-        _temp = __import__(module_name, globals(), locals(), ['cmd_arguments'], -1)
+    for subcommand, module_name in SUBCOMMANDS.items():
+        _temp = __import__(module_name, globals(), locals(), ['cmd_arguments'], 0)
         _temp.cmd_arguments(subparsers)
     
     args = parser.parse_args()
@@ -37,5 +37,5 @@ def cmd_handler():
     configure_logging(args.verbosity)
 
     module_name = SUBCOMMANDS[args.subparser_name]
-    _temp = __import__(module_name, globals(), locals(), ['cmd_handler'], -1)
+    _temp = __import__(module_name, globals(), locals(), ['cmd_handler'], 0)
     _temp.cmd_handler(args)
